@@ -26,6 +26,7 @@ public interface CandidateRepository extends JpaRepository<Candidate, Long> {
     // Check if symbol exists for different candidate
     boolean existsBySymbolAndIdNot(String symbol, Long id);
     
+    
     // Count candidates by status
     long countByStatus(String status);
 
@@ -44,4 +45,6 @@ public interface CandidateRepository extends JpaRepository<Candidate, Long> {
     @Transactional
     @Query("UPDATE Candidate c SET c.voteCount = :voteCount WHERE c.id = :candidateId")
     void updateVoteCount(@Param("candidateId") Long candidateId, @Param("voteCount") Long voteCount);
+    
+    
 }

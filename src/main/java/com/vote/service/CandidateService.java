@@ -8,6 +8,7 @@ import com.vote.entity.Auth;
 import com.vote.entity.Candidate;
 import com.vote.repository.UserRepository;
 import com.vote.repository.CandidateRepository;
+import com.vote.exception.DuplicateResourceException;
 import com.vote.exception.ResourceNotFoundException;
 import jakarta.transaction.Transactional;
 
@@ -51,7 +52,8 @@ public class CandidateService {
             auth.getFullName(),
             auth.getUsername(),
             candidate.getPartyName(),
-            candidate.getSymbol()
+            candidate.getSymbol(),
+            candidate.getStatus() // Include the actual status from database
         );
     }
 
@@ -61,11 +63,16 @@ public class CandidateService {
         Auth auth = getCandidateByUsername(username);
         Candidate candidate = candidateRepository.findById(auth.getId())
             .orElseThrow(() -> new ResourceNotFoundException("Candidate record not found"));
+        
+        // Check if profile is already completed - prevent further updates
+        if ("Completed".equalsIgnoreCase(candidate.getStatus())) {
+            throw new IllegalStateException("Profile update not allowed. Candidate profile is already completed.");
+        }
 
         // Validate party name uniqueness
         if (updateDTO.getPartyName() != null && !updateDTO.getPartyName().isBlank()) {
             if (candidateRepository.existsByPartyNameAndIdNot(updateDTO.getPartyName(), candidate.getId())) {
-                throw new IllegalArgumentException("Party name '" + updateDTO.getPartyName() + "' is already taken");
+                throw new DuplicateResourceException("Party name '" + updateDTO.getPartyName() + "' is already taken");
             }
             candidate.setPartyName(updateDTO.getPartyName());
         }
@@ -73,7 +80,7 @@ public class CandidateService {
         // Validate symbol uniqueness
         if (updateDTO.getSymbol() != null && !updateDTO.getSymbol().isBlank()) {
             if (candidateRepository.existsBySymbolAndIdNot(updateDTO.getSymbol(), candidate.getId())) {
-                throw new IllegalArgumentException("Symbol '" + updateDTO.getSymbol() + "' is already taken");
+                throw new DuplicateResourceException("Symbol '" + updateDTO.getSymbol() + "' is already taken");
             }
             candidate.setSymbol(updateDTO.getSymbol());
         }
@@ -90,7 +97,8 @@ public class CandidateService {
             auth.getFullName(),
             auth.getUsername(),
             candidate.getPartyName(),
-            candidate.getSymbol()
+            candidate.getSymbol(),
+            candidate.getStatus() // Return the updated status
         );
     }
 

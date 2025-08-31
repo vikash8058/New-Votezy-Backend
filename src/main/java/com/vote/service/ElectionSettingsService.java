@@ -78,4 +78,6 @@ public class ElectionSettingsService {
         ElectionSettings settings = repo.findAll().stream().findFirst().orElse(null);
         return settings != null ? settings.getResultStatus() : "not_declared";
     }
+    
+    
 }

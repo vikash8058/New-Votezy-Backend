@@ -28,6 +28,6 @@ public class Candidate {
     @Column(name = "vote_count", nullable = false)
     private Long voteCount = 0L;
 
-    @Column(name = "status", nullable = false)
-    private String status = "Not Completed";
+    @Column(name = "status")
+    private String status = "Profile Incomplete"; // Set default value
 }

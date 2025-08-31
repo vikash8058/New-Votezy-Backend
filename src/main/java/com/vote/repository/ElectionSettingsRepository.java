@@ -15,4 +15,7 @@ public interface ElectionSettingsRepository extends JpaRepository<ElectionSettin
     void truncateTable();
 
 	
+	@Query("SELECT COUNT(e) > 0 FROM ElectionSettings e WHERE e.status = 'active' AND e.resultStatus = 'not_declared'")
+	boolean isElectionRunning();
+
 }

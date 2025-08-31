@@ -15,6 +15,8 @@ import com.vote.repository.VoterRepository;
 import com.vote.repository.CandidateRepository;
 import com.vote.exception.ElectionResultAlreadyDeclaredException;
 import com.vote.exception.ResourceNotFoundException;
+import com.vote.exception.VoteNotAllowedException;
+
 import jakarta.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -85,7 +87,7 @@ public class VoterService {
         
         // Check if voter has already voted
         if (Boolean.TRUE.equals(voter.getHasVoted())) {
-            throw new IllegalStateException("You have already cast your vote");
+            throw new VoteNotAllowedException("You have already cast your vote");
         }
         
         // Double check with Vote table

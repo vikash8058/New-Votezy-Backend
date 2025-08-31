@@ -16,6 +16,8 @@ import com.vote.entity.Auth;
 import com.vote.repository.UserRepository;
 import com.vote.repository.VoterRepository;
 import com.vote.repository.CandidateRepository;
+import com.vote.repository.ElectionSettingsRepository;
+
 import lombok.Data;
 
 @CrossOrigin
@@ -26,10 +28,10 @@ public class AuthController {
     @Autowired PasswordEncoder encoder;
     @Autowired JwtUtil jwtUtil;
     
-    // ADD THESE NEW AUTOWIRED REPOSITORIES
+    
     @Autowired VoterRepository voterRepository;
     @Autowired CandidateRepository candidateRepository;
-    
+    @Autowired ElectionSettingsRepository electionSettingsRepository;
     // Hard-coded admin credentials
     private static final String ADMIN_EMAIL = "vikash@gmail.com";
     private static final String ADMIN_PASSWORD = "Admin123@";
@@ -39,11 +41,20 @@ public class AuthController {
     @PostMapping("/register")
     @Transactional  // ADD THIS ANNOTATION
     public ResponseEntity<?> register(@RequestBody RegisterRequest req) {
+    	
+    	
         // Block ADMIN role registration
         if ("ADMIN".equalsIgnoreCase(req.getRole())) {
             return ResponseEntity.badRequest()
                 .body(Collections.singletonMap("message", "ADMIN role cannot be registered. Contact system administrator."));
         }
+        // Block registration during an election 
+        if (electionSettingsRepository.isElectionRunning()) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                .body(Collections.singletonMap("message", 
+                    "Registration is closed during the election until results are declared."));
+        }
+
         
         // Check if admin email is trying to register as CANDIDATE
         if ("CANDIDATE".equalsIgnoreCase(req.getRole()) && ADMIN_EMAIL.equalsIgnoreCase(req.getEmail())) {
