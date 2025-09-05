@@ -1,8 +1,10 @@
 package com.vote.service;
 
 import com.vote.dto.ElectionSettingsDTO;
+import com.vote.dto.VoteRecordDTO;
 import com.vote.entity.ElectionSettings;
 import com.vote.repository.ElectionSettingsRepository;
+import com.vote.repository.VoteRepository;
 import com.vote.exception.ResourceNotFoundException;
 import com.vote.exception.ElectionResultAlreadyDeclaredException;
 
@@ -16,6 +18,9 @@ public class ElectionSettingsService {
 
     @Autowired
     private ElectionSettingsRepository repo;
+    
+    @Autowired
+    private VoteRepository voteRepository;
     
     @Transactional
     public void resetAllSettingsWithTruncate() {
@@ -79,5 +84,5 @@ public class ElectionSettingsService {
         return settings != null ? settings.getResultStatus() : "not_declared";
     }
     
-    
+  
 }

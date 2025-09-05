@@ -1,9 +1,11 @@
 package com.vote.repository;
 
+
 import com.vote.entity.Vote;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import java.util.List;
+import java.util.Optional;
 
 public interface VoteRepository extends JpaRepository<Vote, Long> {
     
@@ -11,7 +13,7 @@ public interface VoteRepository extends JpaRepository<Vote, Long> {
     boolean existsByVoterId(Long voterId);
     
     // Get vote by voter ID
-    Vote findByVoterId(Long voterId);
+    Optional<Vote> findByVoterId(Long voterId);
     
     // Count votes for a specific candidate
     long countByCandidateId(Long candidateId);
@@ -26,4 +28,9 @@ public interface VoteRepository extends JpaRepository<Vote, Long> {
     // Total votes cast
     @Query("SELECT COUNT(v) FROM Vote v")
     long getTotalVotesCast();
+    
+   
+    
+    
+
 }

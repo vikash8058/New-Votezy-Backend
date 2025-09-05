@@ -8,6 +8,7 @@ import com.vote.dto.VoterProfileDTO;
 import com.vote.dto.VoterUpdateDTO;
 import com.vote.dto.VotingResultDTO;
 import com.vote.entity.Auth;
+import com.vote.service.VoteService;
 import com.vote.service.VoterService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +26,9 @@ public class VoterController {
 
     @Autowired
     private VoterService voterService;
+    
+    @Autowired
+    private VoteService voteService;
 
     // Voter Profile Endpoints
     @GetMapping("/profile")
@@ -50,6 +54,17 @@ public class VoterController {
             return ResponseEntity.badRequest()
                 .body(Collections.singletonMap("message", "Current password is incorrect"));
         }
+    }
+    
+    //get vote record
+    
+    @GetMapping("/vote-record/{username}")
+    public ResponseEntity<?> getVoteRecord(@PathVariable String username) {
+        return voteService.getVoteRecord(username)
+                .<ResponseEntity<?>>map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.ok(
+                        Map.of("message", "No vote record found for this voter.")
+                ));
     }
 
     // Voting Endpoints
@@ -93,6 +108,7 @@ public class VoterController {
         voterService.deleteVoter(id);
         return ResponseEntity.ok(Collections.singletonMap("message", "Voter deleted successfully"));
     }
+    
 
     // Statistics endpoints
  // Add these corrected methods to your VoterController.java

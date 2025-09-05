@@ -31,7 +31,7 @@ public class SecurityConfig {
             .authorizeHttpRequests(authz -> authz
                 // Public endpoints
                 .requestMatchers("/api/auth/**", "/api/admin/**", "/api/election-settings", "/api/candidates", "/api/candidates/**",
-                               "/api/election-results", "/api/election-winner", "/api/results-available").permitAll()
+                               "/api/election-results", "/api/election-winner", "/api/results-available","/api/isResult/declared","/api/vote-record/**").permitAll()
                 
                 // Admin only endpoints
                 .requestMatchers("/api/admin/**", "/api/voting-results", "/api/total-votes-cast",

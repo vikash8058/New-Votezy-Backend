@@ -16,6 +16,9 @@ public interface UserRepository extends JpaRepository<Auth, Long> {
     @Query("SELECT u FROM Auth u WHERE u.username = :username")
     Optional<Auth> findByUsername(@Param("username") String username);
     
+    @Query("SELECT id FROM Auth WHERE username=:username")
+    Long findByUsername1(String username);
+    
     // This method returns all users with the given username (multiple roles possible)
     @Query("SELECT u FROM Auth u WHERE u.username = :username")
     List<Auth> findAllByUsername(@Param("username") String username);
@@ -28,4 +31,5 @@ public interface UserRepository extends JpaRepository<Auth, Long> {
     
     // Check if username exists
     boolean existsByUsername(String username);
+    
 }

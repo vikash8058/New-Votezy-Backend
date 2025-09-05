@@ -5,6 +5,7 @@ import com.vote.dto.WinnerDTO;
 import com.vote.service.ResultService;
 import com.vote.service.ElectionSettingsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -66,6 +67,21 @@ public class ResultController {
         
         return ResponseEntity.ok(response);
     }
+    
+    @GetMapping("/isResult/declared")
+    public ResponseEntity<?> checkResultsStatus() {
+        try {
+            boolean declared = electionSettingsService.areResultsDeclared();
+            return ResponseEntity.ok(Map.of("resultsDeclared", declared));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of(
+                            "error", "Failed to fetch results status",
+                            "details", e.getMessage()
+                    ));
+        }
+    }
+
 
     // PUBLIC ENDPOINTS (accessible after results are declared)
     
